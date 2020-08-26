@@ -32,7 +32,7 @@ def strip_tag_name(t):
 
 def writeArticle(text, id):
     try:
-        article_file = open(PATH_WIKI_ARTICLES+id+".txt", "w")
+        article_file = open(PATH_WIKI_ARTICLES+str(id)+".txt", "w")
         article_file.write(text)
         article_file.close()
     except:
@@ -88,7 +88,7 @@ with codecs.open(pathArticles, "w", ENCODING) as articlesFH, \
                 ns = int(elem.text)
             elif tname == 'text':
                 text = elem.text
-                writeArticle(text, is)
+                writeArticle(text, id)
             elif tname == 'page':
                 totalCount += 1
 
