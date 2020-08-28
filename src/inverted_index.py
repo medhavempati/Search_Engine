@@ -71,7 +71,7 @@ class Inverted_Index():
 
         
 
-    def new_article(self, article, doc_id):
+    def new_text(self, article, doc_id, field):
         for w in article:
             self.find_word(w, doc_id)
 
