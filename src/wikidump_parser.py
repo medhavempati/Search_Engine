@@ -1,5 +1,6 @@
 from dependencies import *
 from inverted_index import *
+from title_log import title_log
 
 start_time = time.time()
 
@@ -41,7 +42,10 @@ class Parser():
                 if event == 'end':
                     if tag == 'title':
                         self.title = element.text
-                        words_in_title = [w.lower() for w in re.split("([A-Z][^A-Z]*)", self.title) if w]
+                        words = [w for w in re.split("([A-Z][^A-Z]*)", self.title) if w]
+                        title_log[' '.join(words)] = self.doc_id
+                        words_in_title = [w.lower() for w in words]
+                        self.inverted_idx.new_article(words_in_title, self.doc_id)
                         # print(words_in_title)
 
                         self.TEMP += 1
@@ -51,7 +55,7 @@ class Parser():
                         self.article = element.text
                         words_in_article = self.tokenize(self.article)
                         print(words_in_article)
-                        self.inverted_idx.new_article(words_in_article, self.doc_id)
+                        # self.inverted_idx.new_article(words_in_article, self.doc_id)
 
                     elif tag == 'page':
                         # articlesWriter.writerow([self.doc_id, self.title, self.article])
@@ -61,5 +65,6 @@ class Parser():
 
 parser = Parser()
 parser.parse()
+print(title_log)
 
 print(f"time: {time.time()- start_time}")

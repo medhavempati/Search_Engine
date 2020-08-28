@@ -3,7 +3,7 @@
 import xml.etree.ElementTree as etree
 import csv
 import re
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize, sent_tokenize
 import time
 
 # CONSTANTS
