@@ -3,21 +3,14 @@ from dependencies import *
 class Inverted_Index():
 
     '''
-    Indexing mechanism
-    0 -> doc
-    1 -> field
-    2 -> position
-    '''
-
-    '''
     Type
+    0 - doc
     1 - body
     2 - infobox
     3 - references
     4 - outlinks
-    5 - sub-headings
-    6 - categories
-    7 - title
+    5 - categories
+    6 - title
     '''
 
     def __init__(self):
@@ -40,37 +33,29 @@ class Inverted_Index():
                 exit()
         return
 
-
-    def add_new_word(self, word, doc, field=1):
+    def new_instance(self, word, doc):
         self.check(1, word)
         self.check(2, doc)
-        matrix = [[]]
-        self.index[word] = [[doc[]]]
+        self.index[word] = [doc, 0, 0, 0, 0, 0, 0]
+        
 
-    def add_to_existing_word(self, word, doc, field=1):
+    def add_entry(self, word, doc, field=1):
         self.check(1, word)
         self.check(2, doc)
-
-        for w in self.index:
-            if w == word:
-                self.index[word].append([doc, field, pos])
+        self.new_instance(word, doc)
+        self.index[word][doc][field] += 1
 
     def find_word(self, word, doc, field=1):
         self.check(1, word)
         self.check(2, doc)
 
         if not bool(self.index):
-            self.add_new_word(word, doc, field, pos)
+            self.new_instance(word, doc)
 
+        if not word in self.index:
+            self.new_instance(word, doc)
 
-        if word in self.index:
-            # print(f'found match: {word}')
-            self.add_to_existing_word(word, doc, field, pos)
-        else:
-            # print(f'adding new wrod: {word}')
-            self.add_new_word(word, doc, field, pos)
-
-        
+        self.add_entry(word, doc, field)
 
     def new_text(self, article, doc_id, field):
         for w in article:

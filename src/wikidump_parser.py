@@ -51,7 +51,7 @@ class Parser():
                         words = [w for w in re.split("([A-Z][^A-Z]*)", element.text) if w]
                         title_log[' '.join(words)] = self.doc_id
                         words_in_title = [w.lower() for w in words]
-                        self.inverted_idx.new_text(words_in_title, self.doc_id, 7)
+                        self.inverted_idx.new_text(words_in_title, self.doc_id, 6)
                         # print(words_in_title)
 
                         self.TEMP += 1
@@ -139,7 +139,7 @@ class Parser():
                             # print(f'\n\nCATEGORY TEXT: {category_text}\n\n')
                             category_text = self.tokenize(category_text)
                             
-                            self.inverted_idx.new_text(category_text, self.doc_id, 6)
+                            self.inverted_idx.new_text(category_text, self.doc_id, 5)
 
                         body_text = element.text[self.body_start:self.body_end]
                         body_text = self.tokenize(body_text)
