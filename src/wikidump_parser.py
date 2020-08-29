@@ -16,8 +16,10 @@ class Parser():
 
 
     def strip_punctuation(self, text):
-        intable = '}])([{|":,.=#><\/&'
-        outtable = '                  '
+        intable = PUNCTUATION
+        outtable = ''                  
+        for p in intable:
+            outtable += ' '
         transtable = str.maketrans(intable, outtable)
         translated_text = text.translate(transtable)
         return translated_text
