@@ -46,7 +46,7 @@ class Parser():
                         words = [w for w in re.split("([A-Z][^A-Z]*)", element.text) if w]
                         title_log[' '.join(words)] = self.doc_id
                         words_in_title = [w.lower() for w in words]
-                        # self.inverted_idx.new_text(words_in_title, self.doc_id, 7)
+                        self.inverted_idx.new_text(words_in_title, self.doc_id, 7)
                         # print(words_in_title)
 
                         self.TEMP += 1
@@ -75,7 +75,7 @@ class Parser():
                             # print(infobox_text)
                             infobox_text = self.tokenize(infobox_text)
                             print(infobox_text)
-                            # self.inverted_idx.new_text(infobox_text, self.doc_id, 2)
+                            self.inverted_idx.new_text(infobox_text, self.doc_id, 2)
 
 
                         # if '==External' or '== External' or '==Links' or '== Links' in element.text:
@@ -92,11 +92,11 @@ class Parser():
                             # print(f'\n\nCATEGORY TEXT: {category_text}\n\n')
                             category_text = self.tokenize(category_text)
                             
-                            # self.inverted_idx.new_text(category_text, self.doc_id, 6)
+                            self.inverted_idx.new_text(category_text, self.doc_id, 6)
 
                         words_in_article = self.tokenize(element.text)
                         # print(words_in_article)
-                        # self.inverted_idx.new_text(words_in_article, self.doc_id)
+                        self.inverted_idx.new_text(words_in_article, self.doc_id)
 
                     elif tag == 'page':
                         # articlesWriter.writerow([self.doc_id, self.title, self.article])
