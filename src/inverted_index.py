@@ -41,12 +41,13 @@ class Inverted_Index():
         return
 
 
-    def add_new_word(self, word, doc, field=1, pos=0):
+    def add_new_word(self, word, doc, field=1):
         self.check(1, word)
         self.check(2, doc)
-        self.index[word] = [[doc, field, pos]]
+        matrix = [[]]
+        self.index[word] = [[doc[]]]
 
-    def add_to_existing_word(self, word, doc, field=1, pos=0):
+    def add_to_existing_word(self, word, doc, field=1):
         self.check(1, word)
         self.check(2, doc)
 
@@ -54,7 +55,7 @@ class Inverted_Index():
             if w == word:
                 self.index[word].append([doc, field, pos])
 
-    def find_word(self, word, doc, field=1, pos=0):
+    def find_word(self, word, doc, field=1):
         self.check(1, word)
         self.check(2, doc)
 
@@ -66,7 +67,7 @@ class Inverted_Index():
             # print(f'found match: {word}')
             self.add_to_existing_word(word, doc, field, pos)
         else:
-            print(f'adding new wrod: {word}')
+            # print(f'adding new wrod: {word}')
             self.add_new_word(word, doc, field, pos)
 
         

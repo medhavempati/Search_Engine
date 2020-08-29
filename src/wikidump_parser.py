@@ -10,11 +10,14 @@ class Parser():
         self.doc_id = 1
         self.TEMP = 0
         self.inverted_idx = Inverted_Index()
+        self.body_start = 0
+        self.body_end = -1
+        self.title = ''
 
 
     def strip_punctuation(self, text):
-        intable = '}])([{|":,.=#><\/'
-        outtable = '                 '
+        intable = '}])([{|":,.=#><\/&'
+        outtable = '                  '
         transtable = str.maketrans(intable, outtable)
         translated_text = text.translate(transtable)
         return translated_text
@@ -36,13 +39,15 @@ class Parser():
         #     articlesWriter.writerow(['id', 'title', 'article'])
 
             for event, element in self.etree.iterparse(XML_FILE, events=('start', 'end')):
-                if self.TEMP == 13:
-                    return
+                # if self.TEMP == 13:
+                #     return
 
                 tag = element.tag[43:]
                 
                 if event == 'end':
                     if tag == 'title':
+                        self.title = element.text 
+
                         words = [w for w in re.split("([A-Z][^A-Z]*)", element.text) if w]
                         title_log[' '.join(words)] = self.doc_id
                         words_in_title = [w.lower() for w in words]
@@ -65,6 +70,7 @@ class Parser():
                                 if brackets == 0:
                                     break
                             infobox_text = infobox[:endpt]
+                            self.body_start = endpt+1
                             # print(infobox_text)
                             infobox_lines = infobox_text.split('\n')
                             infobox_text = ''
@@ -74,15 +80,56 @@ class Parser():
                                     infobox_text += line[line.find('='):]
                             # print(infobox_text)
                             infobox_text = self.tokenize(infobox_text)
-                            print(infobox_text)
+                            # print(infobox_text)
                             self.inverted_idx.new_text(infobox_text, self.doc_id, 2)
+                        else:
+                            self.body_start = 0
+
+                        if 'References' in element.text:
+                            references = element.text[element.text.find('References'):]
+                            self.body_end = element.text.find('References')
+                            prev = ''
+                            for endpt, char in enumerate(references):
+                                if prev == '=' and char == '=':
+                                    break
+                                prev = char
+                            reference_text = references[:endpt-2]
+                            reference_lines = reference_text.split('\n')
+                            reference_text = ''
+                            for line in reference_lines:
+                                if '|' in line:
+                                    reference_text += line[line.find('|'):]
+                            reference_text = self.tokenize(reference_text)
+                            self.inverted_idx.new_text(reference_text, self.doc_id, 3)
 
 
-                        # if '==External' or '== External' or '==Links' or '== Links' in element.text:
-                        #     link_text = 
+                        start_idx = None
+                        if '==External' in element.text:
+                            start_idx = element.text.find('==External')
+                        elif '== External' in element.text:
+                            start_idx = element.text.find('== External')
+                        elif '==Links' in element.text:
+                            start_idx = element.text.find('==Links')
+                        
+                        if '[[Category' in element.text:
+                            end_idx = element.text.find('[[Category')
+                        else:
+                            end_idx = -1
+
+                        if start_idx != None:
+                            links_text = element.text[start_idx:end_idx]
+                            links_text = self.tokenize(links_text)
+                            self.inverted_idx.new_text(links_text, self.doc_id, 4)
+
+                            if self.body_end == -1:
+                                self.body_end = start_idx
+
+
 
                         if '[[Category' in element.text:
                             category_text = element.text[element.text.find('[[Category'):]
+                            if self.body_end == -1:
+                                self.body_end = element.text.find('[[Category')
                             category_lines = category_text.split('\n')
                             # print(category_lines) 
 
@@ -94,18 +141,21 @@ class Parser():
                             
                             self.inverted_idx.new_text(category_text, self.doc_id, 6)
 
-                        words_in_article = self.tokenize(element.text)
+                        body_text = element.text[self.body_start:self.body_end]
+                        body_text = self.tokenize(body_text)
                         # print(words_in_article)
-                        self.inverted_idx.new_text(words_in_article, self.doc_id)
+                        self.inverted_idx.new_text(body_text, self.doc_id, 1)
 
                     elif tag == 'page':
                         # articlesWriter.writerow([self.doc_id, self.title, self.article])
+                        print(f'{self.title}\n')
                         self.doc_id += 1
                         element.clear()
 
 
 parser = Parser()
 parser.parse()
-print(title_log)
+# print(title_log)
+# print(f'index:\n {parser.inverted_idx.index}')
 
 print(f"time: {time.time()- start_time}")
