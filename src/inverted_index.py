@@ -63,7 +63,7 @@ class Inverted_Index():
 
 
         if word in self.index:
-            print(f'found match: {word}')
+            # print(f'found match: {word}')
             self.add_to_existing_word(word, doc, field, pos)
         else:
             print(f'adding new wrod: {word}')
@@ -75,4 +75,4 @@ class Inverted_Index():
         for w in article:
             self.find_word(w, doc_id)
 
-        print(f"index: \n {self.index}")
+        # print(f"index: \n {self.index}")
